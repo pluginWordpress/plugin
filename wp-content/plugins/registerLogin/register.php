@@ -165,5 +165,4 @@ function mon_plugin_register()
     wp_redirect(home_url('/page-d-exemple'));
     exit;
 }
-add_action('admin_post_nopriv_mon_plugin_register', 'mon_plugin_register');
 add_action('admin_post_mon_plugin_register', 'mon_plugin_register');
