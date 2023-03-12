@@ -43,7 +43,7 @@ function mon_plugin_desactivation()
 register_deactivation_hook(__FILE__, 'mon_plugin_desactivation');
 
 // Fonction pour afficher le formulaire de signal
-function mon_plugin_shortcode()
+function mon_plugin_shortcode_register()
 {
     ob_start();
     ?>
@@ -125,7 +125,7 @@ function mon_plugin_shortcode()
     <?php
     return ob_get_clean();
 }
-add_shortcode('mon_plugin_form', 'mon_plugin_shortcode');
+add_shortcode('mon_plugin_form_register', 'mon_plugin_shortcode_register');
 
 // Fonction pour enregistrer le signal dans la base de données
 function mon_plugin_register()
