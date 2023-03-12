@@ -90,7 +90,7 @@ function mon_plugin_login()
         echo $_SESSION ['user_id'] . $_SESSION['user_email'].$_SESSION['user_name'] ;
         wp_redirect(home_url());
     } else {
-        wp_redirect(home_url('/page-d-exemple'));
+        wp_redirect(home_url('/Login'));
     }
     
     
