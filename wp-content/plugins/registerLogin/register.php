@@ -42,7 +42,7 @@ function mon_plugin_desactivation()
 }
 register_deactivation_hook(__FILE__, 'mon_plugin_desactivation');
 
-// Fonction pour afficher le formulaire de signal
+// Fonction pour afficher le formulaire de register
 function mon_plugin_shortcode_register()
 {
     ob_start();
@@ -127,7 +127,7 @@ function mon_plugin_shortcode_register()
 }
 add_shortcode('mon_plugin_form_register', 'mon_plugin_shortcode_register');
 
-// Fonction pour enregistrer le signal dans la base de données
+// Fonction pour enregistrer user dans la base de données
 function mon_plugin_register()
 {
     global $wpdb;
