@@ -162,7 +162,7 @@ function mon_plugin_register()
         )
     );
 
-    wp_redirect(home_url('/Login'));
+    wp_redirect(home_url('/login'));
     exit;
 }
 add_action('admin_post_mon_plugin_register', 'mon_plugin_register');
