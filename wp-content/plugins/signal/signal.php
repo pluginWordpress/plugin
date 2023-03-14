@@ -290,12 +290,12 @@ add_action('admin_post_mon_plugin_register', 'mon_plugin_register');
 function affiche_signal_add_menu_page()
 {
     add_menu_page(
-        __('affiche_Signal', 'textdomain'),
-        'affiche_Signal',
+        __('afficheSignal', 'textdomain'),
+        'Affichage Signal',
         'manage_options',
         'affiche_Signal',
         '',
-        'dashicons-admin-home',
+        'dashicons-format-gallery',
         6
     );
     add_submenu_page(
