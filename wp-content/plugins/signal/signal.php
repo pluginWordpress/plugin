@@ -1,3 +1,4 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <?php
 /*
 Plugin Name: Signal
@@ -17,11 +18,9 @@ function mon_plugin_activation()
 
     $sql = "CREATE TABLE $table_name (
         id mediumint(9) NOT NULL AUTO_INCREMENT,
-        nom varchar(255) NOT NULL,
-        prenom varchar(255) NOT NULL,
+        fullName varchar(255) NOT NULL,
         email varchar(255) NOT NULL,
-        type_signal varchar(255) NOT NULL,
-        raison_signal varchar(255) NOT NULL,
+        numero varchar(13) NOT NULL,
         commentaire varchar(255) NOT NULL,
         date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY  (id)
@@ -65,11 +64,12 @@ add_action('admin_menu', 'signal_add_menu_page');
 
 function Signal_callback()
 {
-    ?>
+?>
     <style>
-        .form{
+        .form {
             margin-top: 10rem;
         }
+
         form {
             display: flex;
             flex-direction: column;
@@ -108,32 +108,23 @@ function Signal_callback()
     </style>
     <form class="form" id="form">
         <div>
-            <input type="radio" name="nom" id="nom">
-            <label class="labelForm" for="nom">nom:</label>
-        </div>
-        <div>
-            <input type="radio" name="prenom" id="prenom">
-            <label class="labelForm" for="prenom">prenom:</label>
+            <input type="radio" name="fullName" id="fullName">
+            <label class="labelForm" for="fullName">Nom Complet:</label>
         </div>
         <div>
             <input type="radio" name="email" id="email">
             <label class="labelForm" for="email">Email:</label>
         </div>
         <div>
-            <input type="radio" name="type_signal" id="type_signal">
-            <label class="labelForm" for="type_signal">le type de signal:</label>
-        </div>
-        <div>
-            <input type="radio" name="raison_signal" id="raison_signal">
-            <label class="labelForm" for="raison_signal">le raison de votre signal:</label>
-        </div>
-        <div>
             <input type="radio" name="commentaire" id="commentaire">
-            <label class="labelForm" for="commentaire">un commentaire:</label>
+            <label class="labelForm" for="commentaire">Commentaire:</label>
         </div>
         <div>
-            <input class="Submit" type="submit" value="Save">
+            <input type="radio" name="numero" id="numero">
+            <label class="labelForm" for="numero">Numero Telephone:</label>
         </div>
+
+        <input class="Submit" type="submit" value="Save">
     </form>
     <script>
         var form = document.getElementById('form')
@@ -141,96 +132,94 @@ function Signal_callback()
             event.preventDefault();
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
-            if (data.nom == 'on') {
-                var nomInput = `<div>
-                                    <label for="nom">nom:</label>
-                                    <input type="text" name="nom" id="nom">
+            if (data.fullName == 'on') {
+                var fullName = `<div>
+                                    <label for="fullName">Nom Complet:</label>
+                                    <input type="text" name="fullName" id="fullName">
                                 </div>`
             } else {
-                var nomInput = `<input type="hidden" value=' ' name="nom" id="nom">`
-            }
-            if (data.prenom == 'on') {
-                var prenomInput = `<div>
-                                    <label for="prenom">prenom:</label>
-                                    <input type="text" name="prenom" id="prenom">
-                                </div>`
-            } else {
-                var prenomInput = `<input type="hidden" value=' ' name="prenom" id="prenom">`
+                var fullName = `<input type="hidden" value=' ' name="fullName" id="fullName">`
             }
             if (data.email == 'on') {
                 var emailInput = `<div>
-                                    <label for="email">email:</label>
+                                    <label for="email">Email:</label>
                                     <input type="email" name="email" id="email">
                                 </div>`
             } else {
                 var emailInput = `<input type="hidden" value=' ' name="email" id="email">`
             }
-            if (data.type_signal == 'on') {
-                var typeInput = `<div>
-                                    <label for="type_signal">type de signal:</label>
-                                    <select name="type_signal" id="type_signal">
-                                        <option value="type 1">type 1</option>
-                                        <option value="type 2">type 2</option>
-                                        <option value="type 3">type 3</option>
-                                    </select>
+            if (data.numero == 'on') {
+                var numeroInput = `<div>
+                                    <label for="numero">Numero Telephone:</label>
+                                    <input type="numero" name="numero" id="numero">
                                 </div>`
             } else {
-                var typeInput = `<input type="hidden" value=' ' name="type_signal" id="type_signal">`
-            }
-            if (data.raison_signal == 'on') {
-                var raisonInput = `<div>
-                                    <label for="raison_signal">raison de signal:</label>
-                                    <select name="raison_signal" id="raison_signal">
-                                        <option value="raison 1">raison 1</option>
-                                        <option value="raison 2">raison 2</option>
-                                        <option value="raison 3">raison 3</option>
-                                    </select>
-                                </div>`
-            } else {
-                var raisonInput = `<input type="hidden" value=' ' name="raison_signal" id="raison_signal">`
+                var numeroInput = `<input type="hidden" value=' ' name="numero" id="numero">`
             }
             if (data.commentaire == 'on') {
                 var commentaireInput = `<div>
-                                    <label for="commentaire">commentaire:</label>
-                                    <textarea style="resize:none" name="commentaire" id="commentaire" cols="30" rows="10"></textarea>
+                                    <label for="commentaire">Commentaire:</label>
+                                    <textarea name="commentaire" id="commentaire"></textarea>
                                 </div>`
             } else {
                 var commentaireInput = `<input type="hidden" value=' ' name="commentaire" id="commentaire">`
             }
-            var formSelected = `<form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                                    ${nomInput}
-                                    ${prenomInput}
-                                    ${emailInput}
-                                    ${typeInput}
-                                    ${raisonInput}
-                                    ${commentaireInput}
-                                    <div>
-                                        <input type="hidden" name="action" value="mon_plugin_register">
-                                        <input class="Submit" type="submit" value="Envoyer">
-                                    </div>
-                                </form>`
-            localStorage.setItem("formSelected",formSelected)
+            var formSelected = `<div>
+                                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                        ${fullName}
+                                        ${emailInput}
+                                        ${numeroInput}
+                                        ${commentaireInput}
+                                        <div>
+                                            <input type="hidden" name="action" value="mon_plugin_register">
+                                            <input class="Submit" type="submit" value="Envoyer">
+                                        </div>
+                                    </form>
+                                </div>`
+            localStorage.setItem("formSelected", formSelected)
+            location.reload();
         })
     </script>
-    <?php
+<?php
 }
 function mon_plugin_shortcode_signal()
 {
     ob_start();
-    ?>
+?>
     <style>
-        p form {
+        p div {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            width: 50%;
-            margin: 0 25%;
+            align-items: center;
+            gap: 1rem;
         }
 
-        p form div {
+        p div form {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        p div form div {
+            display: flex !important;
+            flex-direction: row !important;
+            width: 100%;
+        }
+
+        p div form div label {
+            width: 27%;
+        }
+
+        p div form div input,
+        p div form div textarea {
+            width: 70%;
+        }
+
+        p div form div textarea {
+            resize: none;
+            height: 7rem;
         }
 
         .Submit {
@@ -244,7 +233,8 @@ function mon_plugin_shortcode_signal()
             border-radius: 7px;
             cursor: pointer;
         }
-        .Submit:hover{
+
+        .Submit:hover {
             color: aliceblue;
         }
     </style>
@@ -254,31 +244,27 @@ function mon_plugin_shortcode_signal()
         var formSelected = localStorage.getItem("formSelected")
         p.innerHTML = formSelected
     </script>
-    <?php
+<?php
     return ob_get_clean();
 }
-add_shortcode('mon_plugin_form_signal', 'mon_plugin_shortcode_signal');
+add_shortcode('mon_plugin_form', 'mon_plugin_shortcode_signal');
 function mon_plugin_register()
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'signal';
 
 
-    $nom = $_POST['nom'];
-    $prenom = $_POST['prenom'];
+    $fullName = $_POST['fullName'];
     $email = $_POST['email'];
-    $type_signal = $_POST['type_signal'];
-    $raison_signal = $_POST['raison_signal'];
+    $numero = $_POST['numero'];
     $commentaire = $_POST['commentaire'];
 
     $wpdb->insert(
         $table_name,
         array(
-            'nom' => $nom,
-            'prenom' => $prenom,
+            'fullName' => $fullName,
             'email' => $email,
-            'type_signal' => $type_signal,
-            'raison_signal' => $raison_signal,
+            'numero' => $numero,
             'commentaire' => $commentaire
         )
     );
@@ -314,30 +300,31 @@ function affiche_Signal_callback()
     global $wpdb;
     $table_name = $wpdb->prefix . 'signal';
 
-    $results = $wpdb->get_results( "SELECT * FROM $table_name");
-    ?>
-        <table>
+    $results = $wpdb->get_results("SELECT * FROM $table_name");
+?>
+    <table class="table">
+        <thead>
             <tr>
-                <td>nom</td>
-                <td>prenom</td>
-                <td>email</td>
-                <td>type_signal</td>
-                <td>raison_signal</td>
-                <td>commentaire</td>
-                <td>date</td>
+                <th scope="col">Nom Complet</th>
+                <th scope="col">Email</th>
+                <th scope="col">Numero Telephone:</th>
+                <th scope="col">Commentaire</th>
+                <th scope="col">Date</th>
             </tr>
-            <?php foreach ($results as $result) {?>
-            <tr>
-                <td><?=$result->nom?></td>
-                <td><?=$result->prenom?></td>
-                <td><?=$result->email?></td>
-                <td><?=$result->type_signal?></td>
-                <td><?=$result->raison_signal?></td>
-                <td><?=$result->commentaire?></td>
-                <td><?=$result->date?></td>
-            </tr>
-            <?php }?>
-        </table>
-        <?php
+        </thead>
+        <tbody>
+            <?php foreach ($results as $result) { ?>
+                <tr>
+                    <td><?= $result->fullName ?></td>
+                    <td><?= $result->email ?></td>
+                    <td><?= $result->numero ?></td>
+                    <td><?= $result->commentaire ?></td>
+                    <td><?= $result->date ?></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+<?php
 }
 ?>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
