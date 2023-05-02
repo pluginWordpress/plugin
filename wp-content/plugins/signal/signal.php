@@ -214,7 +214,7 @@ function mon_plugin_shortcode_signal()
 
         p div form div input,
         p div form div textarea {
-            width: 70%;
+            width: 43%;
         }
 
         p div form div textarea {
@@ -302,7 +302,7 @@ function affiche_Signal_callback()
 
     $results = $wpdb->get_results("SELECT * FROM $table_name");
 ?>
-    <table class="table">
+    <table class="table" id="myTable">
         <thead>
             <tr>
                 <th scope="col">Nom Complet</th>
@@ -324,6 +324,39 @@ function affiche_Signal_callback()
             <?php } ?>
         </tbody>
     </table>
+    <button onclick="exportTableToExcel('myTable')">Export to Excel</button>
+    <script>
+        function exportTableToExcel(tableID, filename = '') {
+            var downloadLink;
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+            // Specify file name
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+            // Create download link element
+            downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTML], {
+                    type: dataType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Create a link to the file
+                downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+                // Setting the file name
+                downloadLink.download = filename;
+
+                //triggering the function
+                downloadLink.click();
+            }
+        }
+    </script>
 <?php
 }
 ?>
