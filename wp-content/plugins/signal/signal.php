@@ -22,6 +22,7 @@ function mon_plugin_activation()
         email varchar(255) NOT NULL,
         numero varchar(13) NOT NULL,
         commentaire varchar(255) NOT NULL,
+        -- vue TINYINT NOT NULL DEFAULT '0',
         date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY  (id)
     ) $charset_collate;";
@@ -128,12 +129,13 @@ function mon_plugin_register()
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'Contact';
+    var_dump ($table_name);die;
 
     $fullName = $_POST['fullName'];
     $email = $_POST['email'];
     $numero = $_POST['numero'];
     $commentaire = $_POST['commentaire'];
-
+var_dump ($fullName,$email,$numero,$commentaire);die;
     $wpdb->insert(
         $table_name,
         array(
@@ -185,6 +187,7 @@ function affiche_Contact_callback()
                 <th scope="col">Numero Telephone:</th>
                 <th scope="col">Commentaire</th>
                 <th scope="col">Date</th>
+                <th scope="col">Vue</th>
             </tr>
         </thead>
         <tbody>
@@ -195,6 +198,16 @@ function affiche_Contact_callback()
                     <td><?= $result->numero ?></td>
                     <td><?= $result->commentaire ?></td>
                     <td><?= $result->date ?></td>
+                    <td>
+                        <?php 
+                            if($result->vue == 0){
+                                echo 'Non Lue';
+                            } 
+                            if($result->vue == 1){
+                                echo 'Lue';
+                            }
+                        ?>
+                    </td>
                 </tr>
             <?php } ?>
         </tbody>
