@@ -1,9 +1,9 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <?php
 /*
-Plugin Name: Signal
-Plugin URI: https://github.com/pluginsWordpress/Signal/blob/main/signal.php
-Description: Plugin de signal personnalisé pour WordPress
+Plugin Name: Contact
+Plugin URI: https://github.com/pluginsWordpress/Contact/blob/main/Signal.php
+Description: Plugin de Contact personnalisé pour WordPress
 Version: 1.0
 Author: Marouane
 Author URI: https://github.com/marouane216
@@ -12,7 +12,7 @@ Author URI: https://github.com/marouane216
 function mon_plugin_activation()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'signal';
+    $table_name = $wpdb->prefix . 'Contact';
 
     $charset_collate = $wpdb->get_charset_collate();
 
@@ -35,166 +35,24 @@ register_activation_hook(__FILE__, 'mon_plugin_activation');
 function mon_plugin_desactivation()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'signal';
+    $table_name = $wpdb->prefix . 'Contact';
 
     $wpdb->query("DROP TABLE IF EXISTS $table_name");
 }
 register_deactivation_hook(__FILE__, 'mon_plugin_desactivation');
-function signal_add_menu_page()
-{
-    add_menu_page(
-        __('Signal', 'textdomain'),
-        'Signal',
-        'manage_options',
-        'Signal',
-        '',
-        'dashicons-admin-plugins',
-        6
-    );
-    add_submenu_page(
-        'Signal',
-        __('Books Shortcode Reference', 'textdomain'),
-        __('Shortcode Reference', 'textdomain'),
-        'manage_options',
-        'Signal',
-        'Signal_callback'
-    );
-}
-add_action('admin_menu', 'signal_add_menu_page');
-
-function Signal_callback()
-{
-?>
-    <style>
-        .form {
-            margin-top: 10rem;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 50%;
-            margin: 0 25%;
-            justify-content: center;
-        }
-
-        form div {
-            display: flex;
-            flex-direction: row;
-            justify-content: start;
-        }
-
-        form div label,
-        form div input {
-            cursor: pointer;
-        }
-
-        .Submit {
-            background-color: #0d6efd;
-            color: black;
-            font-size: 1rem;
-            width: 6rem;
-            display: flex;
-            justify-content: center;
-            border: 1px solid;
-            border-radius: 7px;
-            cursor: pointer;
-        }
-
-        .Submit:hover {
-            color: aliceblue;
-        }
-    </style>
-    <form class="form" id="form">
-        <div>
-            <input type="radio" name="fullName" id="fullName">
-            <label class="labelForm" for="fullName">Nom Complet:</label>
-        </div>
-        <div>
-            <input type="radio" name="email" id="email">
-            <label class="labelForm" for="email">Email:</label>
-        </div>
-        <div>
-            <input type="radio" name="commentaire" id="commentaire">
-            <label class="labelForm" for="commentaire">Commentaire:</label>
-        </div>
-        <div>
-            <input type="radio" name="numero" id="numero">
-            <label class="labelForm" for="numero">Numero Telephone:</label>
-        </div>
-
-        <input class="Submit" type="submit" value="Save">
-    </form>
-    <script>
-        var form = document.getElementById('form')
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
-            if (data.fullName == 'on') {
-                var fullName = `<div>
-                                    <label for="fullName">Nom Complet:</label>
-                                    <input type="text" name="fullName" id="fullName">
-                                </div>`
-            } else {
-                var fullName = `<input type="hidden" value=' ' name="fullName" id="fullName">`
-            }
-            if (data.email == 'on') {
-                var emailInput = `<div>
-                                    <label for="email">Email:</label>
-                                    <input type="email" name="email" id="email">
-                                </div>`
-            } else {
-                var emailInput = `<input type="hidden" value=' ' name="email" id="email">`
-            }
-            if (data.numero == 'on') {
-                var numeroInput = `<div>
-                                    <label for="numero">Numero Telephone:</label>
-                                    <input type="numero" name="numero" id="numero">
-                                </div>`
-            } else {
-                var numeroInput = `<input type="hidden" value=' ' name="numero" id="numero">`
-            }
-            if (data.commentaire == 'on') {
-                var commentaireInput = `<div>
-                                    <label for="commentaire">Commentaire:</label>
-                                    <textarea name="commentaire" id="commentaire"></textarea>
-                                </div>`
-            } else {
-                var commentaireInput = `<input type="hidden" value=' ' name="commentaire" id="commentaire">`
-            }
-            var formSelected = `<div>
-                                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                                        ${fullName}
-                                        ${emailInput}
-                                        ${numeroInput}
-                                        ${commentaireInput}
-                                        <div>
-                                            <input type="hidden" name="action" value="mon_plugin_register">
-                                            <input class="Submit" type="submit" value="Envoyer">
-                                        </div>
-                                    </form>
-                                </div>`
-            localStorage.setItem("formSelected", formSelected)
-            location.reload();
-        })
-    </script>
-<?php
-}
-function mon_plugin_shortcode_signal()
+function mon_plugin_shortcode_Contact()
 {
     ob_start();
 ?>
     <style>
-        p div {
+        .divForm {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1rem;
         }
 
-        p div form {
+        .divForm form {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -202,22 +60,22 @@ function mon_plugin_shortcode_signal()
             width: 100%;
         }
 
-        p div form div {
+        .divForm form div {
             display: flex !important;
             flex-direction: row !important;
             width: 100%;
         }
 
-        p div form div label {
+        .divForm form div label {
             width: 27%;
         }
 
-        p div form div input,
-        p div form div textarea {
+        .divForm form div input,
+        .divForm form div textarea {
             width: 43%;
         }
 
-        p div form div textarea {
+        .divForm form div textarea {
             resize: none;
             height: 7rem;
         }
@@ -238,21 +96,38 @@ function mon_plugin_shortcode_signal()
             color: aliceblue;
         }
     </style>
-    <p id="p"></p>
-    <script>
-        var p = document.getElementById('p')
-        var formSelected = localStorage.getItem("formSelected")
-        p.innerHTML = formSelected
-    </script>
+    <div class="divForm">
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <div>
+                <label for="fullName">Nom Complet:</label>
+                <input type="text" name="fullName" id="fullName">
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email">
+            </div>
+            <div>
+                <label for="numero">Numero Telephone:</label>
+                <input type="numero" name="numero" id="numero">
+            </div>
+            <div>
+                <label for="commentaire">Commentaire:</label>
+                <textarea name="commentaire" id="commentaire"></textarea>
+            </div>
+            <div>
+                <input type="hidden" name="action" value="mon_plugin_register">
+                <input class="Submit" type="submit" value="Envoyer">
+            </div>
+        </form>
+    </div>
 <?php
     return ob_get_clean();
 }
-add_shortcode('mon_plugin_form', 'mon_plugin_shortcode_signal');
+add_shortcode('mon_plugin_form', 'mon_plugin_shortcode_Contact');
 function mon_plugin_register()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'signal';
-
+    $table_name = $wpdb->prefix . 'Contact';
 
     $fullName = $_POST['fullName'];
     $email = $_POST['email'];
@@ -273,32 +148,32 @@ function mon_plugin_register()
     exit;
 }
 add_action('admin_post_mon_plugin_register', 'mon_plugin_register');
-function affiche_signal_add_menu_page()
+function affiche_Contact_add_menu_page()
 {
     add_menu_page(
-        __('afficheSignal', 'textdomain'),
-        'Affichage Signal',
+        __('afficheContact', 'textdomain'),
+        'Affichage Contact',
         'manage_options',
-        'affiche_Signal',
+        'affiche_Contact',
         '',
-        'dashicons-format-gallery',
+        'dashicons-format-chat',
         6
     );
     add_submenu_page(
-        'affiche_Signal',
+        'affiche_Contact',
         __('Books Shortcode Reference', 'textdomain'),
         __('Shortcode Reference', 'textdomain'),
         'manage_options',
-        'affiche_Signal',
-        'affiche_Signal_callback'
+        'affiche_Contact',
+        'affiche_Contact_callback'
     );
 }
-add_action('admin_menu', 'affiche_signal_add_menu_page');
+add_action('admin_menu', 'affiche_Contact_add_menu_page');
 
-function affiche_Signal_callback()
+function affiche_Contact_callback()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'signal';
+    $table_name = $wpdb->prefix . 'Contact';
 
     $results = $wpdb->get_results("SELECT * FROM $table_name");
 ?>
