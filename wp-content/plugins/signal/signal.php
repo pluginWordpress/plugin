@@ -1,4 +1,5 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 <?php
 /*
 Plugin Name: Contact
@@ -177,15 +178,56 @@ function affiche_Contact_callback()
 
     $results = $wpdb->get_results("SELECT * FROM $table_name");
 ?>
+    <style>
+        .actionDiv {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            width: max-content;
+            margin: auto;
+        }
+
+        .action {
+            width: 25.2px;
+            height: 25.2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-sizing: border-box;
+            border: 1.20968px solid #000000;
+            border-radius: 4.83871px;
+            color: white;
+        }
+
+        .delete {
+            background-color: #FF0000;
+        }
+
+        .edit {
+            background-color: #80FF00;
+        }
+
+        .edit a i {
+            color: white;
+        }
+
+        .Role {
+            background: #00d1ff;
+        }
+    </style>
     <table class="table" id="myTable">
         <thead>
             <tr>
                 <th scope="col">Nom Complet</th>
                 <th scope="col">Email</th>
-                <th scope="col">Numero Telephone:</th>
+                <th scope="col">Numero Telephone</th>
                 <th scope="col">Commentaire</th>
                 <th scope="col">Date</th>
                 <th scope="col">Vue</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -197,14 +239,32 @@ function affiche_Contact_callback()
                     <td><?= $result->commentaire ?></td>
                     <td><?= $result->date ?></td>
                     <td>
-                        <?php 
-                            if($result->vue == 0){
-                                echo 'Non Lue';
-                            } 
-                            if($result->vue == 1){
-                                echo 'Lue';
-                            }
+                        <?php
+                        if ($result->vue == 0) {
+                            echo 'Non Lue';
+                        }
+                        if ($result->vue == 1) {
+                            echo 'Lue';
+                        }
                         ?>
+                    </td>
+                    <td class="actionDiv">
+                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                            <input type="hidden" name="action" value="delete_Contact">
+                            <input type="hidden" name="id_contact" value="<?=$result->id?>">
+                            <button title="delete" type="submit" class="action delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                            <input type="hidden" name="action" value="lue_Contact">
+                            <input type="hidden" name="id_contact" value="<?=$result->id?>">
+                            <?php if ($result->vue == 0) : ?>
+                                <button title="Non Lue / Lue?" class="action Role">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            <?php endif ?>
+                        </form>
                     </td>
                 </tr>
             <?php } ?>
@@ -245,5 +305,38 @@ function affiche_Contact_callback()
     </script>
 <?php
 }
+function delete_Contact()
+{
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'Contact';
+
+    $id = $_POST['id_contact'];
+
+    $wpdb->get_results("DELETE FROM $table_name WHERE id = $id");
+
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        $referer = wp_get_referer();
+        wp_redirect($referer);
+        exit;
+    }
+}
+add_action('admin_post_delete_Contact', 'delete_Contact');
+
+function lue_Contact()
+{
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'Contact';
+
+    $id = $_POST['id_contact'];
+
+    $wpdb->get_results("UPDATE $table_name SET vue = 1 WHERE id = $id");
+
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        $referer = wp_get_referer();
+        wp_redirect($referer);
+        exit;
+    }
+}
+add_action('admin_post_lue_Contact', 'lue_Contact');
 ?>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
