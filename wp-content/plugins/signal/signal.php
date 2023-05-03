@@ -135,15 +135,10 @@ function mon_plugin_register()
     $email = $_POST['email'];
     $numero = $_POST['numero'];
     $commentaire = $_POST['commentaire'];
-    $wpdb->insert(
-        $table_name,
-        array(
-            'fullName' => $fullName,
-            'email' => $email,
-            'numero' => $numero,
-            'commentaire' => $commentaire
-        )
-    );
+
+    $sql = "INSERT INTO $table_name(`fullName`, `email`, `numero`, `commentaire`) VALUES ('$fullName','$email','$numero','$commentaire')";
+    // var_dump($sql);die;
+    $wpdb->get_results($sql);
 
     wp_redirect(home_url(''));
     exit;
