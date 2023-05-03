@@ -1,3 +1,8 @@
+<?php
+error_reporting(0);
+
+// En-tête link
+?>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 <?php
@@ -128,6 +133,7 @@ function mon_plugin_shortcode_Contact()
 add_shortcode('mon_plugin_form', 'mon_plugin_shortcode_Contact');
 function mon_plugin_register()
 {
+    ob_start();
     global $wpdb;
     $table_name = $wpdb->prefix . 'Contact';
 
@@ -137,11 +143,12 @@ function mon_plugin_register()
     $commentaire = $_POST['commentaire'];
 
     $sql = "INSERT INTO $table_name(`fullName`, `email`, `numero`, `commentaire`) VALUES ('$fullName','$email','$numero','$commentaire')";
-    // var_dump($sql);die;
+
     $wpdb->get_results($sql);
 
     wp_redirect(home_url(''));
-    exit;
+    return ob_get_clean();
+    
 }
 add_action('admin_post_mon_plugin_register', 'mon_plugin_register');
 function affiche_Contact_add_menu_page()
@@ -302,6 +309,7 @@ function affiche_Contact_callback()
 }
 function delete_Contact()
 {
+    ob_start();
     global $wpdb;
     $table_name = $wpdb->prefix . 'Contact';
 
@@ -312,13 +320,14 @@ function delete_Contact()
     if (isset($_SERVER['HTTP_REFERER'])) {
         $referer = wp_get_referer();
         wp_redirect($referer);
-        exit;
+        return ob_get_clean();
     }
 }
 add_action('admin_post_delete_Contact', 'delete_Contact');
 
 function lue_Contact()
 {
+    ob_start();
     global $wpdb;
     $table_name = $wpdb->prefix . 'Contact';
 
@@ -329,7 +338,7 @@ function lue_Contact()
     if (isset($_SERVER['HTTP_REFERER'])) {
         $referer = wp_get_referer();
         wp_redirect($referer);
-        exit;
+        return ob_get_clean();
     }
 }
 add_action('admin_post_lue_Contact', 'lue_Contact');
