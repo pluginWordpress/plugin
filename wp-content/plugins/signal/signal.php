@@ -22,7 +22,7 @@ function mon_plugin_activation()
         email varchar(255) NOT NULL,
         numero varchar(13) NOT NULL,
         commentaire varchar(255) NOT NULL,
-        -- vue TINYINT NOT NULL DEFAULT '0',
+        vue TINYINT NOT NULL DEFAULT '0',
         date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY  (id)
     ) $charset_collate;";
@@ -129,13 +129,11 @@ function mon_plugin_register()
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'Contact';
-    var_dump ($table_name);die;
 
     $fullName = $_POST['fullName'];
     $email = $_POST['email'];
     $numero = $_POST['numero'];
     $commentaire = $_POST['commentaire'];
-var_dump ($fullName,$email,$numero,$commentaire);die;
     $wpdb->insert(
         $table_name,
         array(
