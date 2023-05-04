@@ -264,6 +264,11 @@ function affiche_Contact_callback()
             background-color: lime;
             color: black;
         }
+
+        a {
+            color: #ffb40a;
+            text-decoration: none;
+        }
     </style>
     <table class="table" id="myTable">
         <thead>
@@ -281,7 +286,11 @@ function affiche_Contact_callback()
             <?php foreach ($results as $result) { ?>
                 <tr>
                     <td><?= $result->fullName ?></td>
-                    <td><?= $result->email ?></td>
+                    <td>
+                        <a href="mailto:<?= $result->email ?>">
+                            <?= $result->email ?>
+                        </a>
+                    </td>
                     <td><?= $result->numero ?></td>
                     <td><?= $result->commentaire ?></td>
                     <td><?= $result->date ?></td>
@@ -306,17 +315,36 @@ function affiche_Contact_callback()
 
                             </button>
                         </form>
-                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                            <input type="hidden" name="action" value="lue_Contact">
-                            <input type="hidden" name="id_contact" value="<?= $result->id ?>">
-                            <?php if ($result->vue == 0) : ?>
-                                <button title="Non Lue / Lue?" class="action Role">
+                        <?php if ($result->vue == 0) : ?>
+                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                <input type="hidden" name="action" value="lue_Contact">
+                                <input type="hidden" name="id_contact" value="<?= $result->id ?>">
+                                <button title="Lue?" class="action Role">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="white" />
                                     </svg>
                                 </button>
-                            <?php endif ?>
-                        </form>
+                            </form>
+                        <?php endif ?>
+                        <?php if ($result->vue == 1) : ?>
+                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                <input type="hidden" name="action" value="non_lue_Contact">
+                                <input type="hidden" name="id_contact" value="<?= $result->id ?>">
+                                <button title="Non Lue?" class="action Role">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_1_4)">
+                                            <path d="M12 4C6.54545 4 1.88727 7.31733 0 12C1.88727 16.6827 6.54545 20 12 20C17.4545 20 22.1127 16.6827 24 12C22.1127 7.31733 17.4545 4 12 4ZM12 17.3333C8.98909 17.3333 6.54545 14.944 6.54545 12C6.54545 9.056 8.98909 6.66667 12 6.66667C15.0109 6.66667 17.4545 9.056 17.4545 12C17.4545 14.944 15.0109 17.3333 12 17.3333ZM12 8.8C10.1891 8.8 8.72727 10.2293 8.72727 12C8.72727 13.7707 10.1891 15.2 12 15.2C13.8109 15.2 15.2727 13.7707 15.2727 12C15.2727 10.2293 13.8109 8.8 12 8.8Z" fill="white" />
+                                            <line x1="0.801388" y1="-0.801388" x2="24.8014" y2="23.1986" stroke="white" stroke-width="2.26667" />
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_1_4">
+                                                <rect width="24" height="24" fill="white" />
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+
+                            </form>
+                        <?php endif ?>
                     </td>
                 </tr>
             <?php } ?>
@@ -392,4 +420,21 @@ function lue_Contact()
     }
 }
 add_action('admin_post_lue_Contact', 'lue_Contact');
+function non_lue_Contact()
+{
+    ob_start();
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'Contact';
+
+    $id = $_POST['id_contact'];
+
+    $wpdb->get_results("UPDATE $table_name SET vue = 0 WHERE id = $id");
+
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        $referer = wp_get_referer();
+        wp_redirect($referer);
+        return ob_get_clean();
+    }
+}
+add_action('admin_post_non_lue_Contact', 'non_lue_Contact');
 ?>
