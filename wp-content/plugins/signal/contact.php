@@ -21,6 +21,8 @@ function mon_plugin_activation()
         email varchar(255) NOT NULL,
         numero varchar(13) NOT NULL,
         commentaire varchar(255) NOT NULL,
+        soldeCPF varchar(255) NOT NULL,
+        formation varchar(255) NOT NULL,
         vue TINYINT NOT NULL DEFAULT '0',
         date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY  (id)
@@ -72,6 +74,12 @@ function mon_plugin_shortcode_Contact()
         }
 
         .divForm form div input,
+        .divForm form div select {
+            height: 40px;
+        }
+
+        .divForm form div input,
+        .divForm form div select,
         .divForm form div textarea {
             width: 43%;
         }
@@ -116,17 +124,191 @@ function mon_plugin_shortcode_Contact()
                 <textarea name="commentaire" id="commentaire"></textarea>
             </div>
             <div>
+                <label for="formation">Formation:</label>
+                <select id="formation">
+                    <option value="" selected disabled>Formation</option>
+                    <option value="langues">Langues</option>
+                    <option value="bureautique">Bureautique</option>
+                    <option value="créativité">Créativité</option>
+                    <option value="entreprendre">Entreprendre</option>
+                    <option value="digital">Digital</option>
+                    <option value="informatique">Informatique</option>
+                </select>
+            </div>
+            <div id="langues" style="display: none !important;">
+                <label for="langues">Langues:</label>
+                <select id="selectlangues" name="langues">
+                    <option value="" selected disabled>Langues</option>
+                    <option value="Anglais">Anglais</option>
+                    <option value="Espagnol">Espagnol</option>
+                    <option value="Français">Français</option>
+                    <option value="LSF">LSF</option>
+                    <option value="Allemand">Allemand</option>
+                </select>
+            </div>
+            <div id="bureautique" style="display: none !important;">
+                <label for="bureautique">Bureautique:</label>
+                <select id="selectbureautique" name="bureautique">
+                    <option value="" selected disabled>Bureautique</option>
+                    <option value="Microsoft Word">Microsoft Word</option>
+                    <option value="Microsoft Excel">Microsoft Excel</option>
+                    <option value="Microsoft Powerpoint">Microsoft Powerpoint</option>
+                    <option value="Microsoft Office">Microsoft Office</option>
+                </select>
+            </div>
+            <div id="créativité" style="display: none !important;">
+                <label for="créativité">Créativité:</label>
+                <select id="selectcréativité" name="créativité">
+                    <option value="" selected disabled>Créativité</option>
+                    <option value="Photoshop">Photoshop</option>
+                    <option value="Illustrator">Illustrator</option>
+                    <option value="InDesign">InDesign</option>
+                </select>
+            </div>
+            <div id="entreprendre" style="display: none !important;">
+                <label for="entreprendre">Entreprendre:</label>
+                <select id="selectentreprendre" name="entreprendre">
+                    <option value="" selected disabled>Entreprendre</option>
+                    <option value="Création d'entreprise">Création d'entreprise</option>
+                    <option value="Business Plan">Business Plan</option>
+                    <option value="Management d'équipe">Management d'équipe</option>
+                </select>
+            </div>
+            <div id="digital" style="display: none !important;">
+                <label for="digital">Digital:</label>
+                <select id="selectdigital" name="digital">
+                    <option value="" selected disabled>Digital</option>
+                    <option value="La force de vente">La force de vente</option>
+                    <option value="Whatsapp business">Whatsapp business</option>
+                    <option value="Réseaux sociaux">Réseaux sociaux</option>
+                </select>
+            </div>
+            <div id="informatique" style="display: none !important;">
+                <label for="informatique">Informatique:</label>
+                <select id="selectinformatique" name="informatique">
+                    <option value="" selected disabled>Informatique</option>
+                    <option value="Programmation">Programmation</option>
+                    <option value="Sécurité informatique">Sécurité informatique</option>
+                    <option value="WordPress">WordPress</option>
+                </select>
+            </div>
+            <div>
+                <label for="soldeCPF">Solde CPF</label>
+                <input type="numero" name="soldeCPF" id="soldeCPF" placeholder="Solde CPF en €">
+            </div>
+            <div>
                 <input type="hidden" name="action" value="mon_plugin_register">
                 <input class="Submit" type="submit" value="Envoyer">
             </div>
         </form>
     </div>
+    <script>
+        let formation = document.querySelector('#formation')
+        formation.addEventListener('change', function() {
+            var formationSelected = formation.value
+
+            var filsFormationlangues = document.querySelector('#langues')
+            var filsFormationbureautique = document.querySelector('#bureautique')
+            var filsFormationentreprendre = document.querySelector('#entreprendre')
+            var filsFormationcréativité = document.querySelector('#créativité')
+            var filsFormationdigital = document.querySelector('#digital')
+            var filsFormationinformatique = document.querySelector('#informatique')
+
+            var selectFilsFormationlangues = document.querySelector('#selectlangues')
+            var selectFilsFormationbureautique = document.querySelector('#selectbureautique')
+            var selectFilsFormationentreprendre = document.querySelector('#selectentreprendre')
+            var selectFilsFormationcréativité = document.querySelector('#selectcréativité')
+            var selectFilsFormationdigital = document.querySelector('#selectdigital')
+            var selectFilsFormationinformatique = document.querySelector('#selectinformatique')
+
+            if (formationSelected == 'langues') {
+                filsFormationlangues.style.display = "block"
+                selectFilsFormationbureautique.selectedIndex = 0;
+                filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationentreprendre.selectedIndex = 0;
+                filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.selectedIndex = 0;
+                filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.selectedIndex = 0;
+                filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.selectedIndex = 0;
+                filsFormationinformatique.setAttribute("style", "display : none !important")
+            }
+            if (formationSelected == 'bureautique') {
+                selectFilsFormationlangues.selectedIndex = 0;
+                filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationbureautique.selectedIndex = 0;
+                filsFormationbureautique.style.display = "block"
+                selectFilsFormationentreprendre.selectedIndex = 0;
+                filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.selectedIndex = 0;
+                filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.selectedIndex = 0;
+                filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.selectedIndex = 0;
+                filsFormationinformatique.setAttribute("style", "display : none !important")
+            }
+            if (formationSelected == 'entreprendre') {
+                filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.selectedIndex = 0;
+                selectFilsFormationbureautique.selectedIndex = 0;
+                filsFormationbureautique.setAttribute("style", "display : none !important")
+                filsFormationentreprendre.style.display = "block"
+                selectFilsFormationcréativité.selectedIndex = 0;
+                filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.selectedIndex = 0;
+                filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.selectedIndex = 0;
+                filsFormationinformatique.setAttribute("style", "display : none !important")
+            }
+            if (formationSelected == 'créativité') {
+                filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.selectedIndex = 0;
+                filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationbureautique.selectedIndex = 0;
+                selectFilsFormationentreprendre.selectedIndex = 0;
+                filsFormationentreprendre.setAttribute("style", "display : none !important")
+                filsFormationcréativité.style.display = "block"
+                selectFilsFormationdigital.selectedIndex = 0;
+                filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.selectedIndex = 0;
+                filsFormationinformatique.setAttribute("style", "display : none !important")
+            }
+            if (formationSelected == 'digital') {
+                filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.selectedIndex = 0;
+                selectFilsFormationbureautique.selectedIndex = 0;
+                filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationentreprendre.selectedIndex = 0;
+                filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.selectedIndex = 0;
+                filsFormationcréativité.setAttribute("style", "display : none !important")
+                filsFormationdigital.style.display = "block"
+                selectFilsFormationinformatique.selectedIndex = 0;
+                filsFormationinformatique.setAttribute("style", "display : none !important")
+            }
+            if (formationSelected == 'informatique') {
+                filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.selectedIndex = 0;
+                filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationbureautique.selectedIndex = 0;
+                selectFilsFormationentreprendre.selectedIndex = 0;
+                filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.selectedIndex = 0;
+                filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.selectedIndex = 0;
+                filsFormationdigital.setAttribute("style", "display : none !important")
+                filsFormationinformatique.style.display = "block"
+            }
+        })
+    </script>
 <?php
     return ob_get_clean();
 }
 add_shortcode('mon_plugin_form', 'mon_plugin_shortcode_Contact');
 function mon_plugin_register()
 {
+    error_reporting(0);
     ob_start();
     global $wpdb;
     $table_name = $wpdb->prefix . 'Contact';
@@ -135,6 +317,33 @@ function mon_plugin_register()
     $email = $_POST['email'];
     $numero = $_POST['numero'];
     $commentaire = $_POST['commentaire'];
+    $soldeCPF = $_POST['soldeCPF']."€";
+
+    $langues = $_POST['langues'];
+    $bureautique = $_POST['bureautique'];
+    $entreprendre = $_POST['entreprendre'];
+    $créativité = $_POST['créativité'];
+    $digital = $_POST['digital'];
+    $informatique = $_POST['informatique'];
+
+    if ($langues != NULL){
+        $formation = $langues;
+    }
+    if ($bureautique != NULL){
+        $formation = $bureautique;
+    }
+    if ($entreprendre != NULL){
+        $formation = $entreprendre;
+    }
+    if ($créativité != NULL){
+        $formation = $créativité;
+    }
+    if ($digital != NULL){
+        $formation = $digital;
+    }
+    if ($informatique != NULL){
+        $formation = $informatique;
+    }
 
     $wpdb->insert(
         $table_name,
@@ -142,6 +351,8 @@ function mon_plugin_register()
             'fullName' => $fullName,
             'email' => $email,
             'numero' => $numero,
+            'formation' => $formation,
+            'soldeCPF' => $soldeCPF,
             'commentaire' => $commentaire
         )
     );
@@ -220,8 +431,7 @@ function affiche_Contact_callback()
             flex-direction: row;
             align-items: center;
             gap: 10px;
-            width: 0rem;
-            border-right: none !important;
+            width: auto;
         }
 
         .action {
@@ -277,6 +487,8 @@ function affiche_Contact_callback()
                 <th scope="col">Email</th>
                 <th scope="col">Numero Telephone</th>
                 <th scope="col">Commentaire</th>
+                <th scope="col">Formation</th>
+                <th scope="col">Solde CPF</th>
                 <th scope="col">Date</th>
                 <th scope="col">Vue</th>
                 <th scope="col">Action</th>
@@ -293,6 +505,8 @@ function affiche_Contact_callback()
                     </td>
                     <td><?= $result->numero ?></td>
                     <td><?= $result->commentaire ?></td>
+                    <td><?= $result->formation ?></td>
+                    <td><?= $result->soldeCPF ?></td>
                     <td><?= $result->date ?></td>
                     <td>
                         <?php
