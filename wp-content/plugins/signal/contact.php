@@ -109,23 +109,23 @@ function mon_plugin_shortcode_Contact()
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <div>
                 <label for="fullName">Nom Complet:</label>
-                <input type="text" name="fullName" id="fullName">
+                <input type="text" name="fullName" id="fullName" required="required">
             </div>
             <div>
                 <label for="email">Email:</label>
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" required="required">
             </div>
             <div>
                 <label for="numero">Numero Telephone:</label>
-                <input type="numero" name="numero" id="numero">
+                <input type="numero" name="numero" id="numero" required="required">
             </div>
             <div>
                 <label for="commentaire">Commentaire:</label>
-                <textarea name="commentaire" id="commentaire"></textarea>
+                <textarea name="commentaire" id="commentaire" required="required"></textarea>
             </div>
             <div>
                 <label for="formation">Formation:</label>
-                <select id="formation">
+                <select id="formation" required="required">
                     <option value="" selected disabled>Formation</option>
                     <option value="langues">Langues</option>
                     <option value="bureautique">Bureautique</option>
@@ -194,7 +194,7 @@ function mon_plugin_shortcode_Contact()
             </div>
             <div>
                 <label for="soldeCPF">Solde CPF</label>
-                <input type="numero" name="soldeCPF" id="soldeCPF" placeholder="Solde CPF en €">
+                <input type="numero" name="soldeCPF" id="soldeCPF" placeholder="Solde CPF en €" required="required">
             </div>
             <div>
                 <input type="hidden" name="action" value="mon_plugin_register">
@@ -223,82 +223,118 @@ function mon_plugin_shortcode_Contact()
 
             if (formationSelected == 'langues') {
                 filsFormationlangues.style.display = "block"
+                selectFilsFormationlangues.setAttribute('required', 'required')
                 selectFilsFormationbureautique.selectedIndex = 0;
                 filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationbureautique.removeAttribute("required");
                 selectFilsFormationentreprendre.selectedIndex = 0;
                 filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.removeAttribute("required");
                 selectFilsFormationcréativité.selectedIndex = 0;
                 filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.removeAttribute("required");
                 selectFilsFormationdigital.selectedIndex = 0;
                 filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.removeAttribute("required");
                 selectFilsFormationinformatique.selectedIndex = 0;
                 filsFormationinformatique.setAttribute("style", "display : none !important")
+                selectFilsFormationentreprendre.removeAttribute("required");
             }
             if (formationSelected == 'bureautique') {
                 selectFilsFormationlangues.selectedIndex = 0;
                 filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 selectFilsFormationbureautique.selectedIndex = 0;
                 filsFormationbureautique.style.display = "block"
+                selectFilsFormationbureautique.setAttribute('required', 'required')
                 selectFilsFormationentreprendre.selectedIndex = 0;
                 filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.removeAttribute("required");
                 selectFilsFormationcréativité.selectedIndex = 0;
                 filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.removeAttribute("required");
                 selectFilsFormationdigital.selectedIndex = 0;
                 filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.removeAttribute("required");
                 selectFilsFormationinformatique.selectedIndex = 0;
                 filsFormationinformatique.setAttribute("style", "display : none !important")
+                selectFilsFormationentreprendre.removeAttribute("required");
             }
             if (formationSelected == 'entreprendre') {
                 filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 selectFilsFormationlangues.selectedIndex = 0;
                 selectFilsFormationbureautique.selectedIndex = 0;
                 filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 filsFormationentreprendre.style.display = "block"
+                selectFilsFormationentreprendre.setAttribute('required', 'required')
                 selectFilsFormationcréativité.selectedIndex = 0;
                 filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.removeAttribute("required");
                 selectFilsFormationdigital.selectedIndex = 0;
                 filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.removeAttribute("required");
                 selectFilsFormationinformatique.selectedIndex = 0;
                 filsFormationinformatique.setAttribute("style", "display : none !important")
+                selectFilsFormationentreprendre.removeAttribute("required");
             }
             if (formationSelected == 'créativité') {
                 filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 selectFilsFormationlangues.selectedIndex = 0;
                 filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 selectFilsFormationbureautique.selectedIndex = 0;
                 selectFilsFormationentreprendre.selectedIndex = 0;
                 filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.removeAttribute("required");
                 filsFormationcréativité.style.display = "block"
+                selectFilsFormationcréativité.setAttribute('required', 'required')
                 selectFilsFormationdigital.selectedIndex = 0;
                 filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.removeAttribute("required");
                 selectFilsFormationinformatique.selectedIndex = 0;
                 filsFormationinformatique.setAttribute("style", "display : none !important")
+                selectFilsFormationentreprendre.removeAttribute("required");
             }
             if (formationSelected == 'digital') {
                 filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 selectFilsFormationlangues.selectedIndex = 0;
                 selectFilsFormationbureautique.selectedIndex = 0;
                 filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 selectFilsFormationentreprendre.selectedIndex = 0;
                 filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.removeAttribute("required");
                 selectFilsFormationcréativité.selectedIndex = 0;
                 filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.removeAttribute("required");
                 filsFormationdigital.style.display = "block"
+                selectFilsFormationdigital.setAttribute('required', 'required')
                 selectFilsFormationinformatique.selectedIndex = 0;
                 filsFormationinformatique.setAttribute("style", "display : none !important")
+                selectFilsFormationentreprendre.removeAttribute("required");
             }
             if (formationSelected == 'informatique') {
                 filsFormationlangues.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 selectFilsFormationlangues.selectedIndex = 0;
                 filsFormationbureautique.setAttribute("style", "display : none !important")
+                selectFilsFormationlangues.removeAttribute("required");
                 selectFilsFormationbureautique.selectedIndex = 0;
                 selectFilsFormationentreprendre.selectedIndex = 0;
                 filsFormationentreprendre.setAttribute("style", "display : none !important")
+                selectFilsFormationcréativité.removeAttribute("required");
                 selectFilsFormationcréativité.selectedIndex = 0;
                 filsFormationcréativité.setAttribute("style", "display : none !important")
+                selectFilsFormationdigital.removeAttribute("required");
                 selectFilsFormationdigital.selectedIndex = 0;
                 filsFormationdigital.setAttribute("style", "display : none !important")
+                selectFilsFormationinformatique.removeAttribute("required");
                 filsFormationinformatique.style.display = "block"
+                selectFilsFormationinformatique.setAttribute('required', 'required')
             }
         })
     </script>
@@ -317,7 +353,7 @@ function mon_plugin_register()
     $email = $_POST['email'];
     $numero = $_POST['numero'];
     $commentaire = $_POST['commentaire'];
-    $soldeCPF = $_POST['soldeCPF']."€";
+    $soldeCPF = $_POST['soldeCPF'] . "€";
 
     $langues = $_POST['langues'];
     $bureautique = $_POST['bureautique'];
@@ -326,22 +362,22 @@ function mon_plugin_register()
     $digital = $_POST['digital'];
     $informatique = $_POST['informatique'];
 
-    if ($langues != NULL){
+    if ($langues != NULL) {
         $formation = $langues;
     }
-    if ($bureautique != NULL){
+    if ($bureautique != NULL) {
         $formation = $bureautique;
     }
-    if ($entreprendre != NULL){
+    if ($entreprendre != NULL) {
         $formation = $entreprendre;
     }
-    if ($créativité != NULL){
+    if ($créativité != NULL) {
         $formation = $créativité;
     }
-    if ($digital != NULL){
+    if ($digital != NULL) {
         $formation = $digital;
     }
-    if ($informatique != NULL){
+    if ($informatique != NULL) {
         $formation = $informatique;
     }
 
