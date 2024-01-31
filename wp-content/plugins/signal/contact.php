@@ -1,8 +1,9 @@
+
 <?php
 /*
-Plugin Name: Contact
-Plugin URI: https://github.com/pluginsWordpress/Contact/blob/main/Contact.php
-Description: Plugin de Contact personnalisé pour WordPress
+Plugin Name: Signal
+Plugin URI: https://github.com/pluginsWordpress/signal/blob/main/signal.php
+Description: Plugin de signal personnalisé pour WordPress
 Version: 1.0
 Author: Marouane
 Author URI: https://github.com/marouane216
@@ -11,19 +12,18 @@ Author URI: https://github.com/marouane216
 function mon_plugin_activation()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'Contact';
+    $table_name = $wpdb->prefix . 'signal';
 
     $charset_collate = $wpdb->get_charset_collate();
 
     $sql = "CREATE TABLE $table_name (
         id mediumint(9) NOT NULL AUTO_INCREMENT,
-        fullName varchar(255) NOT NULL,
+        nom varchar(255) NOT NULL,
+        prenom varchar(255) NOT NULL,
         email varchar(255) NOT NULL,
-        numero varchar(13) NOT NULL,
+        type_signal varchar(255) NOT NULL,
+        raison_signal varchar(255) NOT NULL,
         commentaire varchar(255) NOT NULL,
-        soldeCPF varchar(255) NOT NULL,
-        formation varchar(255) NOT NULL,
-        vue TINYINT NOT NULL DEFAULT '0',
         date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY  (id)
     ) $charset_collate;";
@@ -37,63 +37,65 @@ register_activation_hook(__FILE__, 'mon_plugin_activation');
 function mon_plugin_desactivation()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'Contact';
+    $table_name = $wpdb->prefix . 'signal';
 
     $wpdb->query("DROP TABLE IF EXISTS $table_name");
 }
 register_deactivation_hook(__FILE__, 'mon_plugin_desactivation');
-function mon_plugin_shortcode_Contact()
+function signal_add_menu_page()
 {
-    ob_start();
-?>
+    add_menu_page(
+        __('Signal', 'textdomain'),
+        'Signal',
+        'manage_options',
+        'Signal',
+        '',
+        'dashicons-admin-plugins',
+        6
+    );
+    add_submenu_page(
+        'Signal',
+        __('Books Shortcode Reference', 'textdomain'),
+        __('Shortcode Reference', 'textdomain'),
+        'manage_options',
+        'Signal',
+        'Signal_callback'
+    );
+}
+add_action('admin_menu', 'signal_add_menu_page');
+
+function Signal_callback()
+{
+    ?>
     <style>
-        .divForm {
+        .form{
+            margin-top: 10rem;
+        }
+        form {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .divForm form {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-            width: 100%;
-        }
-
-        .divForm form div {
-            display: flex !important;
-            flex-direction: row !important;
-            width: 100%;
+            gap: 10px;
+            width: 50%;
+            margin: 0 25%;
             justify-content: center;
         }
 
-        .divForm form div label {
-            width: 27%;
+        form div {
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
         }
 
-        .divForm form div input,
-        .divForm form div select {
-            height: 40px;
-        }
-
-        .divForm form div input,
-        .divForm form div select,
-        .divForm form div textarea {
-            width: 43%;
-        }
-
-        .divForm form div textarea {
-            resize: none;
-            height: 7rem;
+        form div label,
+        form div input {
+            cursor: pointer;
         }
 
         .Submit {
             background-color: #0d6efd;
             color: black;
             font-size: 1rem;
-            width: 6rem !important;
+            width: 6rem;
             display: flex;
             justify-content: center;
             border: 1px solid;
@@ -105,324 +107,213 @@ function mon_plugin_shortcode_Contact()
             color: aliceblue;
         }
     </style>
-    <div class="divForm">
-        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-            <div>
-                <label for="fullName">Nom Complet:</label>
-                <input type="text" name="fullName" id="fullName" required="required">
-            </div>
-            <div>
-                <label for="email">Email:</label>
-                <input type="email" name="email" id="email" required="required">
-            </div>
-            <div>
-                <label for="numero">Numero Telephone:</label>
-                <input type="numero" name="numero" id="numero" required="required">
-            </div>
-            <div>
-                <label for="commentaire">Commentaire:</label>
-                <textarea name="commentaire" id="commentaire" required="required"></textarea>
-            </div>
-            <div>
-                <label for="formation">Formation:</label>
-                <select id="formation" required="required">
-                    <option value="" selected disabled>Formation</option>
-                    <option value="langues">Langues</option>
-                    <option value="bureautique">Bureautique</option>
-                    <option value="créativité">Créativité</option>
-                    <option value="entreprendre">Entreprendre</option>
-                    <option value="digital">Digital</option>
-                    <option value="informatique">Informatique</option>
-                </select>
-            </div>
-            <div id="langues" style="display: none !important;">
-                <label for="langues">Langues:</label>
-                <select id="selectlangues" name="langues">
-                    <option value="" selected disabled>Langues</option>
-                    <option value="Anglais">Anglais</option>
-                    <option value="Espagnol">Espagnol</option>
-                    <option value="Français">Français</option>
-                    <option value="LSF">LSF</option>
-                    <option value="Allemand">Allemand</option>
-                </select>
-            </div>
-            <div id="bureautique" style="display: none !important;">
-                <label for="bureautique">Bureautique:</label>
-                <select id="selectbureautique" name="bureautique">
-                    <option value="" selected disabled>Bureautique</option>
-                    <option value="Microsoft Word">Microsoft Word</option>
-                    <option value="Microsoft Excel">Microsoft Excel</option>
-                    <option value="Microsoft Powerpoint">Microsoft Powerpoint</option>
-                    <option value="Microsoft Office">Microsoft Office</option>
-                </select>
-            </div>
-            <div id="créativité" style="display: none !important;">
-                <label for="créativité">Créativité:</label>
-                <select id="selectcréativité" name="créativité">
-                    <option value="" selected disabled>Créativité</option>
-                    <option value="Photoshop">Photoshop</option>
-                    <option value="Illustrator">Illustrator</option>
-                    <option value="InDesign">InDesign</option>
-                </select>
-            </div>
-            <div id="entreprendre" style="display: none !important;">
-                <label for="entreprendre">Entreprendre:</label>
-                <select id="selectentreprendre" name="entreprendre">
-                    <option value="" selected disabled>Entreprendre</option>
-                    <option value="Création d'entreprise">Création d'entreprise</option>
-                    <option value="Business Plan">Business Plan</option>
-                    <option value="Management d'équipe">Management d'équipe</option>
-                </select>
-            </div>
-            <div id="digital" style="display: none !important;">
-                <label for="digital">Digital:</label>
-                <select id="selectdigital" name="digital">
-                    <option value="" selected disabled>Digital</option>
-                    <option value="La force de vente">La force de vente</option>
-                    <option value="Whatsapp business">Whatsapp business</option>
-                    <option value="Réseaux sociaux">Réseaux sociaux</option>
-                </select>
-            </div>
-            <div id="informatique" style="display: none !important;">
-                <label for="informatique">Informatique:</label>
-                <select id="selectinformatique" name="informatique">
-                    <option value="" selected disabled>Informatique</option>
-                    <option value="Programmation">Programmation</option>
-                    <option value="Sécurité informatique">Sécurité informatique</option>
-                    <option value="WordPress">WordPress</option>
-                </select>
-            </div>
-            <div>
-                <label for="soldeCPF">Solde CPF</label>
-                <input type="numero" name="soldeCPF" id="soldeCPF" placeholder="Solde CPF en €" required="required">
-            </div>
-            <div>
-                <input type="hidden" name="action" value="mon_plugin_register">
-                <input class="Submit" type="submit" value="Envoyer">
-            </div>
-        </form>
-    </div>
+    <form class="form" id="form">
+        <div>
+            <input type="radio" name="nom" id="nom">
+            <label class="labelForm" for="nom">nom:</label>
+        </div>
+        <div>
+            <input type="radio" name="prenom" id="prenom">
+            <label class="labelForm" for="prenom">prenom:</label>
+        </div>
+        <div>
+            <input type="radio" name="email" id="email">
+            <label class="labelForm" for="email">Email:</label>
+        </div>
+        <div>
+            <input type="radio" name="type_signal" id="type_signal">
+            <label class="labelForm" for="type_signal">le type de signal:</label>
+        </div>
+        <div>
+            <input type="radio" name="raison_signal" id="raison_signal">
+            <label class="labelForm" for="raison_signal">le raison de votre signal:</label>
+        </div>
+        <div>
+            <input type="radio" name="commentaire" id="commentaire">
+            <label class="labelForm" for="commentaire">un commentaire:</label>
+        </div>
+        <div>
+            <input class="Submit" type="submit" value="Save">
+        </div>
+    </form>
     <script>
-        let formation = document.querySelector('#formation')
-        formation.addEventListener('change', function() {
-            var formationSelected = formation.value
-
-            var filsFormationlangues = document.querySelector('#langues')
-            var filsFormationbureautique = document.querySelector('#bureautique')
-            var filsFormationentreprendre = document.querySelector('#entreprendre')
-            var filsFormationcréativité = document.querySelector('#créativité')
-            var filsFormationdigital = document.querySelector('#digital')
-            var filsFormationinformatique = document.querySelector('#informatique')
-
-            var selectFilsFormationlangues = document.querySelector('#selectlangues')
-            var selectFilsFormationbureautique = document.querySelector('#selectbureautique')
-            var selectFilsFormationentreprendre = document.querySelector('#selectentreprendre')
-            var selectFilsFormationcréativité = document.querySelector('#selectcréativité')
-            var selectFilsFormationdigital = document.querySelector('#selectdigital')
-            var selectFilsFormationinformatique = document.querySelector('#selectinformatique')
-
-            if (formationSelected == 'langues') {
-                filsFormationlangues.style.display = "block"
-                selectFilsFormationlangues.setAttribute('required', 'required')
-                selectFilsFormationbureautique.selectedIndex = 0;
-                filsFormationbureautique.setAttribute("style", "display : none !important")
-                selectFilsFormationbureautique.removeAttribute("required");
-                selectFilsFormationentreprendre.selectedIndex = 0;
-                filsFormationentreprendre.setAttribute("style", "display : none !important")
-                selectFilsFormationcréativité.removeAttribute("required");
-                selectFilsFormationcréativité.selectedIndex = 0;
-                filsFormationcréativité.setAttribute("style", "display : none !important")
-                selectFilsFormationdigital.removeAttribute("required");
-                selectFilsFormationdigital.selectedIndex = 0;
-                filsFormationdigital.setAttribute("style", "display : none !important")
-                selectFilsFormationinformatique.removeAttribute("required");
-                selectFilsFormationinformatique.selectedIndex = 0;
-                filsFormationinformatique.setAttribute("style", "display : none !important")
-                selectFilsFormationentreprendre.removeAttribute("required");
+        var form = document.getElementById('form')
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            if (data.nom == 'on') {
+                var nomInput = `<div>
+                                    <label for="nom">nom:</label>
+                                    <input type="text" name="nom" id="nom">
+                                </div>`
+            } else {
+                var nomInput = `<input type="hidden" value=' ' name="nom" id="nom">`
             }
-            if (formationSelected == 'bureautique') {
-                selectFilsFormationlangues.selectedIndex = 0;
-                filsFormationlangues.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                selectFilsFormationbureautique.selectedIndex = 0;
-                filsFormationbureautique.style.display = "block"
-                selectFilsFormationbureautique.setAttribute('required', 'required')
-                selectFilsFormationentreprendre.selectedIndex = 0;
-                filsFormationentreprendre.setAttribute("style", "display : none !important")
-                selectFilsFormationcréativité.removeAttribute("required");
-                selectFilsFormationcréativité.selectedIndex = 0;
-                filsFormationcréativité.setAttribute("style", "display : none !important")
-                selectFilsFormationdigital.removeAttribute("required");
-                selectFilsFormationdigital.selectedIndex = 0;
-                filsFormationdigital.setAttribute("style", "display : none !important")
-                selectFilsFormationinformatique.removeAttribute("required");
-                selectFilsFormationinformatique.selectedIndex = 0;
-                filsFormationinformatique.setAttribute("style", "display : none !important")
-                selectFilsFormationentreprendre.removeAttribute("required");
+            if (data.prenom == 'on') {
+                var prenomInput = `<div>
+                                    <label for="prenom">prenom:</label>
+                                    <input type="text" name="prenom" id="prenom">
+                                </div>`
+            } else {
+                var prenomInput = `<input type="hidden" value=' ' name="prenom" id="prenom">`
             }
-            if (formationSelected == 'entreprendre') {
-                filsFormationlangues.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                selectFilsFormationlangues.selectedIndex = 0;
-                selectFilsFormationbureautique.selectedIndex = 0;
-                filsFormationbureautique.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                filsFormationentreprendre.style.display = "block"
-                selectFilsFormationentreprendre.setAttribute('required', 'required')
-                selectFilsFormationcréativité.selectedIndex = 0;
-                filsFormationcréativité.setAttribute("style", "display : none !important")
-                selectFilsFormationdigital.removeAttribute("required");
-                selectFilsFormationdigital.selectedIndex = 0;
-                filsFormationdigital.setAttribute("style", "display : none !important")
-                selectFilsFormationinformatique.removeAttribute("required");
-                selectFilsFormationinformatique.selectedIndex = 0;
-                filsFormationinformatique.setAttribute("style", "display : none !important")
-                selectFilsFormationentreprendre.removeAttribute("required");
+            if (data.email == 'on') {
+                var emailInput = `<div>
+                                    <label for="email">email:</label>
+                                    <input type="email" name="email" id="email">
+                                </div>`
+            } else {
+                var emailInput = `<input type="hidden" value=' ' name="email" id="email">`
             }
-            if (formationSelected == 'créativité') {
-                filsFormationlangues.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                selectFilsFormationlangues.selectedIndex = 0;
-                filsFormationbureautique.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                selectFilsFormationbureautique.selectedIndex = 0;
-                selectFilsFormationentreprendre.selectedIndex = 0;
-                filsFormationentreprendre.setAttribute("style", "display : none !important")
-                selectFilsFormationcréativité.removeAttribute("required");
-                filsFormationcréativité.style.display = "block"
-                selectFilsFormationcréativité.setAttribute('required', 'required')
-                selectFilsFormationdigital.selectedIndex = 0;
-                filsFormationdigital.setAttribute("style", "display : none !important")
-                selectFilsFormationinformatique.removeAttribute("required");
-                selectFilsFormationinformatique.selectedIndex = 0;
-                filsFormationinformatique.setAttribute("style", "display : none !important")
-                selectFilsFormationentreprendre.removeAttribute("required");
+            if (data.type_signal == 'on') {
+                var typeInput = `<div>
+                                    <label for="type_signal">type de signal:</label>
+                                    <select name="type_signal" id="type_signal">
+                                        <option value="type 1">type 1</option>
+                                        <option value="type 2">type 2</option>
+                                        <option value="type 3">type 3</option>
+                                    </select>
+                                </div>`
+            } else {
+                var typeInput = `<input type="hidden" value=' ' name="type_signal" id="type_signal">`
             }
-            if (formationSelected == 'digital') {
-                filsFormationlangues.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                selectFilsFormationlangues.selectedIndex = 0;
-                selectFilsFormationbureautique.selectedIndex = 0;
-                filsFormationbureautique.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                selectFilsFormationentreprendre.selectedIndex = 0;
-                filsFormationentreprendre.setAttribute("style", "display : none !important")
-                selectFilsFormationcréativité.removeAttribute("required");
-                selectFilsFormationcréativité.selectedIndex = 0;
-                filsFormationcréativité.setAttribute("style", "display : none !important")
-                selectFilsFormationdigital.removeAttribute("required");
-                filsFormationdigital.style.display = "block"
-                selectFilsFormationdigital.setAttribute('required', 'required')
-                selectFilsFormationinformatique.selectedIndex = 0;
-                filsFormationinformatique.setAttribute("style", "display : none !important")
-                selectFilsFormationentreprendre.removeAttribute("required");
+            if (data.raison_signal == 'on') {
+                var raisonInput = `<div>
+                                    <label for="raison_signal">raison de signal:</label>
+                                    <select name="raison_signal" id="raison_signal">
+                                        <option value="raison 1">raison 1</option>
+                                        <option value="raison 2">raison 2</option>
+                                        <option value="raison 3">raison 3</option>
+                                    </select>
+                                </div>`
+            } else {
+                var raisonInput = `<input type="hidden" value=' ' name="raison_signal" id="raison_signal">`
             }
-            if (formationSelected == 'informatique') {
-                filsFormationlangues.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                selectFilsFormationlangues.selectedIndex = 0;
-                filsFormationbureautique.setAttribute("style", "display : none !important")
-                selectFilsFormationlangues.removeAttribute("required");
-                selectFilsFormationbureautique.selectedIndex = 0;
-                selectFilsFormationentreprendre.selectedIndex = 0;
-                filsFormationentreprendre.setAttribute("style", "display : none !important")
-                selectFilsFormationcréativité.removeAttribute("required");
-                selectFilsFormationcréativité.selectedIndex = 0;
-                filsFormationcréativité.setAttribute("style", "display : none !important")
-                selectFilsFormationdigital.removeAttribute("required");
-                selectFilsFormationdigital.selectedIndex = 0;
-                filsFormationdigital.setAttribute("style", "display : none !important")
-                selectFilsFormationinformatique.removeAttribute("required");
-                filsFormationinformatique.style.display = "block"
-                selectFilsFormationinformatique.setAttribute('required', 'required')
+            if (data.commentaire == 'on') {
+                var commentaireInput = `<div>
+                                    <label for="commentaire">commentaire:</label>
+                                    <textarea style="resize:none" name="commentaire" id="commentaire" cols="30" rows="10"></textarea>
+                                </div>`
+            } else {
+                var commentaireInput = `<input type="hidden" value=' ' name="commentaire" id="commentaire">`
             }
+            var formSelected = `<form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                    ${nomInput}
+                                    ${prenomInput}
+                                    ${emailInput}
+                                    ${typeInput}
+                                    ${raisonInput}
+                                    ${commentaireInput}
+                                    <div>
+                                        <input type="hidden" name="action" value="mon_plugin_register">
+                                        <input class="Submit" type="submit" value="Envoyer">
+                                    </div>
+                                </form>`
+            localStorage.setItem("formSelected",formSelected)
         })
     </script>
-<?php
+    <?php
+}
+function mon_plugin_shortcode_signal()
+{
+    ob_start();
+    ?>
+    <style>
+        p form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 50%;
+            margin: 0 25%;
+        }
+
+        p form div {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .Submit {
+            background-color: #0d6efd;
+            color: black;
+            font-size: 1rem;
+            width: 6rem;
+            display: flex;
+            justify-content: center;
+            border: 1px solid;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+        .Submit:hover{
+            color: aliceblue;
+        }
+    </style>
+    <p id="p"></p>
+    <script>
+        var p = document.getElementById('p')
+        var formSelected = localStorage.getItem("formSelected")
+        p.innerHTML = formSelected
+    </script>
+    <?php
     return ob_get_clean();
 }
-add_shortcode('mon_plugin_form', 'mon_plugin_shortcode_Contact');
+add_shortcode('mon_plugin_form_signal', 'mon_plugin_shortcode_signal');
 function mon_plugin_register()
 {
-    error_reporting(0);
-    ob_start();
     global $wpdb;
-    $table_name = $wpdb->prefix . 'Contact';
+    $table_name = $wpdb->prefix . 'signal';
 
-    $fullName = $_POST['fullName'];
+
+    $nom = $_POST['nom'];
+    $prenom = $_POST['prenom'];
     $email = $_POST['email'];
-    $numero = $_POST['numero'];
+    $type_signal = $_POST['type_signal'];
+    $raison_signal = $_POST['raison_signal'];
     $commentaire = $_POST['commentaire'];
-    $soldeCPF = $_POST['soldeCPF'] . "€";
-
-    $langues = $_POST['langues'];
-    $bureautique = $_POST['bureautique'];
-    $entreprendre = $_POST['entreprendre'];
-    $créativité = $_POST['créativité'];
-    $digital = $_POST['digital'];
-    $informatique = $_POST['informatique'];
-
-    if ($langues != NULL) {
-        $formation = $langues;
-    }
-    if ($bureautique != NULL) {
-        $formation = $bureautique;
-    }
-    if ($entreprendre != NULL) {
-        $formation = $entreprendre;
-    }
-    if ($créativité != NULL) {
-        $formation = $créativité;
-    }
-    if ($digital != NULL) {
-        $formation = $digital;
-    }
-    if ($informatique != NULL) {
-        $formation = $informatique;
-    }
 
     $wpdb->insert(
         $table_name,
         array(
-            'fullName' => $fullName,
+            'nom' => $nom,
+            'prenom' => $prenom,
             'email' => $email,
-            'numero' => $numero,
-            'formation' => $formation,
-            'soldeCPF' => $soldeCPF,
+            'type_signal' => $type_signal,
+            'raison_signal' => $raison_signal,
             'commentaire' => $commentaire
         )
     );
 
     wp_redirect(home_url(''));
-    return ob_get_clean();
+    exit;
 }
 add_action('admin_post_mon_plugin_register', 'mon_plugin_register');
-function affiche_Contact_add_menu_page()
+function affiche_signal_add_menu_page()
 {
     add_menu_page(
-        __('afficheContact', 'textdomain'),
-        'Affichage Contact',
+        __('affiche_Signal', 'textdomain'),
+        'affiche_Signal',
         'manage_options',
-        'affiche_Contact',
+        'affiche_Signal',
         '',
-        'dashicons-format-chat',
+        'dashicons-admin-home',
         6
     );
     add_submenu_page(
-        'affiche_Contact',
+        'affiche_Signal',
         __('Books Shortcode Reference', 'textdomain'),
         __('Shortcode Reference', 'textdomain'),
         'manage_options',
-        'affiche_Contact',
-        'affiche_Contact_callback'
+        'affiche_Signal',
+        'affiche_Signal_callback'
     );
 }
-add_action('admin_menu', 'affiche_Contact_add_menu_page');
+add_action('admin_menu', 'affiche_signal_add_menu_page');
 
-function affiche_Contact_callback()
+function affiche_Signal_callback()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'Contact';
+    $table_name = $wpdb->prefix . 'signal';
 
     $results = $wpdb->get_results("SELECT * FROM $table_name");
 ?>
@@ -519,41 +410,30 @@ function affiche_Contact_callback()
     <table class="table" id="myTable">
         <thead>
             <tr>
-                <th scope="col">Nom Complet</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prenom</th>
                 <th scope="col">Email</th>
-                <th scope="col">Numero Telephone</th>
+                <th scope="col">Le type de signal</th>
+                <th scope="col">Le raison de votre Signal</th>
                 <th scope="col">Commentaire</th>
-                <th scope="col">Formation</th>
-                <th scope="col">Solde CPF</th>
                 <th scope="col">Date</th>
-                <th scope="col">Vue</th>
-                <th scope="col">Action</th>
+                <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($results as $result) { ?>
                 <tr>
-                    <td><?= $result->fullName ?></td>
+                    <td><?= $result->nom ?></td>
+                    <td><?= $result->prenom ?></td>
                     <td>
                         <a href="mailto:<?= $result->email ?>">
                             <?= $result->email ?>
                         </a>
                     </td>
-                    <td><?= $result->numero ?></td>
+                    <td><?= $result->type_signal ?></td>
+                    <td><?= $result->raison_signal ?></td>
                     <td><?= $result->commentaire ?></td>
-                    <td><?= $result->formation ?></td>
-                    <td><?= $result->soldeCPF ?></td>
                     <td><?= $result->date ?></td>
-                    <td>
-                        <?php
-                        if ($result->vue == 0) {
-                            echo 'Non Lue';
-                        }
-                        if ($result->vue == 1) {
-                            echo 'Lue';
-                        }
-                        ?>
-                    </td>
                     <td class="actionDiv">
                         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                             <input type="hidden" name="action" value="delete_Contact">
@@ -565,36 +445,6 @@ function affiche_Contact_callback()
 
                             </button>
                         </form>
-                        <?php if ($result->vue == 0) : ?>
-                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                                <input type="hidden" name="action" value="lue_Contact">
-                                <input type="hidden" name="id_contact" value="<?= $result->id ?>">
-                                <button title="Lue?" class="action Role">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="white" />
-                                    </svg>
-                                </button>
-                            </form>
-                        <?php endif ?>
-                        <?php if ($result->vue == 1) : ?>
-                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                                <input type="hidden" name="action" value="non_lue_Contact">
-                                <input type="hidden" name="id_contact" value="<?= $result->id ?>">
-                                <button title="Non Lue?" class="action Role">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clip-path="url(#clip0_1_4)">
-                                            <path d="M12 4C6.54545 4 1.88727 7.31733 0 12C1.88727 16.6827 6.54545 20 12 20C17.4545 20 22.1127 16.6827 24 12C22.1127 7.31733 17.4545 4 12 4ZM12 17.3333C8.98909 17.3333 6.54545 14.944 6.54545 12C6.54545 9.056 8.98909 6.66667 12 6.66667C15.0109 6.66667 17.4545 9.056 17.4545 12C17.4545 14.944 15.0109 17.3333 12 17.3333ZM12 8.8C10.1891 8.8 8.72727 10.2293 8.72727 12C8.72727 13.7707 10.1891 15.2 12 15.2C13.8109 15.2 15.2727 13.7707 15.2727 12C15.2727 10.2293 13.8109 8.8 12 8.8Z" fill="white" />
-                                            <line x1="0.801388" y1="-0.801388" x2="24.8014" y2="23.1986" stroke="white" stroke-width="2.26667" />
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_1_4">
-                                                <rect width="24" height="24" fill="white" />
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
-
-                            </form>
-                        <?php endif ?>
                     </td>
                 </tr>
             <?php } ?>
@@ -639,7 +489,7 @@ function delete_Contact()
 {
     ob_start();
     global $wpdb;
-    $table_name = $wpdb->prefix . 'Contact';
+    $table_name = $wpdb->prefix . 'signal';
 
     $id = $_POST['id_contact'];
 
@@ -652,39 +502,5 @@ function delete_Contact()
     }
 }
 add_action('admin_post_delete_Contact', 'delete_Contact');
-
-function lue_Contact()
-{
-    ob_start();
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'Contact';
-
-    $id = $_POST['id_contact'];
-
-    $wpdb->get_results("UPDATE $table_name SET vue = 1 WHERE id = $id");
-
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        $referer = wp_get_referer();
-        wp_redirect($referer);
-        return ob_get_clean();
-    }
-}
-add_action('admin_post_lue_Contact', 'lue_Contact');
-function non_lue_Contact()
-{
-    ob_start();
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'Contact';
-
-    $id = $_POST['id_contact'];
-
-    $wpdb->get_results("UPDATE $table_name SET vue = 0 WHERE id = $id");
-
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        $referer = wp_get_referer();
-        wp_redirect($referer);
-        return ob_get_clean();
-    }
-}
-add_action('admin_post_non_lue_Contact', 'non_lue_Contact');
 ?>
+
